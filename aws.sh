@@ -14,17 +14,32 @@
 source aws_config.sh
 
 get_instance(){
-  INSTANCE_DESCRIBES=`aws ec2 describe-instances`
+  DESCRIBE_INSTANCE=`aws ec2 describe-instances`
 
-  id_perse(){
-    echo ${INSTANCE_DESCRIBES} \
+  instance_perse(){
+    echo ${DESCRIBE_INSTANCE} \
       | jq ".[] | .[] | .Instances | .[] | ${1}" \
       | gsed -e s/\"//g
   }
 
-  INSTANCE_ID=`id_perse ".InstanceId"`
-  INSTANCE_STATUS=`id_perse ".State | .Name"`
-  PUBLIC_IP=`id_perse ".NetworkInterfaces | .[] | .Association | .PublicIp"`
+  INSTANCE_ID=`instance_perse ".InstanceId"`
+  INSTANCE_STATUS=`instance_perse ".State | .Name"`
+  PUBLIC_IP=`instance_perse ".NetworkInterfaces | .[] | .Association | .PublicIp"`
+  INSTANCE_TYPE=`instance_perse ".InstanceType"`
+  LAUNCHTIME=`instance_perse ".LaunchTime"`
+}
+
+get_volume(){
+  DESCRIBE_VOLUMES=`aws ec2 describe-volumes`
+  
+  volume_perse(){
+    echo ${DESCRIBE_VOLUMES} \
+      | jq ".Volumes | .[] | ${1}" \
+      | gsed -e s/\"//g
+  }
+  VOLUME_TYPE=`volume_perse ".VolumeType"`
+  SIZE=`volume_perse ".Size"`
+  CREATE_TIME=`volume_perse ".CreateTime"`
 }
 
 ec2(){
@@ -34,15 +49,23 @@ ec2(){
   }
 
   get_instance
+  get_volume
 
   case "${1}" in
-    "info")
-      echo "Instanse id: "${INSTANCE_ID}""
-      echo "Instanse status: "${INSTANCE_STATUS}""
+    "status")
+      echo "********** Insance **********"
+      echo "id: "${INSTANCE_ID}""
+      echo "type:" "${INSTANCE_TYPE}"
+      echo "status: "${INSTANCE_STATUS}""
       echo "Public IP: "${PUBLIC_IP}""
+      echo "Launch time: "${LAUNCHTIME}""
+      echo "********** Volume **********"
+      echo "type: "${VOLUME_TYPE}""
+      echo "Size: "${SIZE}"GB"
+      echo "Create time: "${CREATE_TIME}""
       ;;
     
-    "run")
+    "create")
       aws ec2 run-instances \
       --image-id ${IMAGE_ID} \
       --instance-type ${INSTANCE_TYPE} \
@@ -72,6 +95,11 @@ ec2(){
         echo "Instance has been stopped"
       fi
       ;;
+
+    *)
+      echo "error"
+      ;;
+
   esac
 }
 
