@@ -12,7 +12,7 @@ NOTEBOOK="0302 schoo"
 
 # functions
 get_slide(){
-  python ~/bin/slideshare-download.py "${URL}"
+  python $HOME/bin/slideshare-download.py "${URL}"
 
   # rename_folder
   mv $HOME/slide $HOME/"${FOLDER_NAME}"
@@ -26,7 +26,7 @@ get_slide(){
 }
 
 image_to_pdf(){
-  convert *.jpg "${SLIDE_TITLE}".pdf
+  convert *.jpg -compress jpeg "${SLIDE_TITLE}".pdf
   wait
   rm *.jpg
 }
@@ -40,6 +40,10 @@ create_note(){
   geeknote create --title "${NOTE_TITILE}" --content " " --notebook "${NOTEBOOK}" --tags "slide"
 }
 
+open_image(){
+  open -a Preview.app "${1}"
+}
+
 # start
 cd
 
@@ -48,12 +52,10 @@ wait
 
 move_folder
 
-if [ "${IMAGE_SIZE}" -gt 8000 ]; then
-  open -a Preview.app $HOME/Documents/schoo/"${FOLDER_NAME}"/*.jpg
-  echo "${SLIDE_TITLE}" | pbcopy
-else
-  cd $HOME/Documents/schoo/"${FOLDER_NAME}"
-  image_to_pdf
-fi
+cd $HOME/Documents/schoo/"${FOLDER_NAME}"
+image_to_pdf
+wait
+
+open_image "${SLIDE_TITLE}.pdf"
 
 create_note
