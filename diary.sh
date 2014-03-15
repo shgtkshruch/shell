@@ -1,25 +1,24 @@
 #!/bin/sh
 #
-# Evernote dialy
+# Evernote diary
 
-# Initial setting
 echo "Note Title"
 read TITLE
-NOTEBOOK="04_Dialy"
-NOTE_NUM=0771
+NOTE_NUM=0773
 NEXT_NOTE_NUM=`expr "${NOTE_NUM}" + 1`
+NOTEBOOK="04_Diary"
 DATE=$(date +%Y/%m/%d)
 NOTE_TITLE="${NOTE_NUM} ${TITLE} (${DATE})"
-gsed_dialy() {
-  gsed -i "${1}" ~/bin/dialy.sh
+gsed_diary() {
+  gsed -i "${1}" ~/bin/diary.sh
 }
 
 # Create new note
 geeknote create --notebook "${NOTEBOOK}" --title "${NOTE_TITLE}" --content " "
 
-# Add NOTE_NUM
-gsed_dialy '5d'
-gsed_dialy "5i\NOTE_NUM=0"${NEXT_NOTE_NUM}""
-
 # Edit note content
 geeknote edit --note "${NOTE_TITLE}" --content "WRITE"
+
+# Add NOTE_NUM
+gsed_diary '7d'
+gsed_diary "7i\NOTE_NUM=0"${NEXT_NOTE_NUM}""
