@@ -11,7 +11,7 @@
 # SECURITY_GROUP_ID=***
 # KEY_NAME=***
 
-source aws_config.sh
+source $HOME/bin/aws_config.sh
 
 get_instance(){
   DESCRIBE_INSTANCE=`aws ec2 describe-instances`
