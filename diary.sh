@@ -4,7 +4,7 @@
 
 echo "Note Title"
 read TITLE
-NOTE_NUM=0773
+NOTE_NUM=0782
 NEXT_NOTE_NUM=`expr "${NOTE_NUM}" + 1`
 NOTEBOOK="04_Diary"
 DATE=$(date +%Y/%m/%d)
