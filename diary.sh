@@ -4,9 +4,9 @@
 
 echo "Note Title"
 read TITLE
-NOTE_NUM=0792
+NOTE_NUM=0796
 NEXT_NOTE_NUM=`expr "${NOTE_NUM}" + 1`
-NOTEBOOK="04_Diary"
+NOTEBOOK="0101 Diary"
 DATE=$(date +%Y/%m/%d)
 NOTE_TITLE="${NOTE_NUM} ${TITLE} (${DATE})"
 gsed_diary() {
